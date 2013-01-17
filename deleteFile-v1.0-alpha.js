@@ -29,38 +29,33 @@ if(isBak){
 	}
 }
 
-result = "刪除" + delDate.toLocaleString()  + "之前的文件\r\n";
-result += "執行時間為：" + today.toLocaleString() + "\r\n";
-result += "刪除資料夾路徑為：" + startFolder + "\r\n";
+output.line("刪除" + delDate.toLocaleString()  + "之前的文件\r\n");
+output.line("執行時間為：" + today.toLocaleString() + "\r\n");
+output.line("刪除資料夾路徑為：" + startFolder + "\r\n");
 
 if(isBak){
-	result += "備份資料夾路徑為：" + bakFolder + "\r\n";
+	output.line("備份資料夾路徑為：" + bakFolder + "\r\n");
 }
 
-result += "刪除文件及資料夾列表詳細信息如下：\r\n";
-output.line(result);
+output.line("刪除文件及資料夾列表詳細信息如下：\r\n");
 
 DeleteOldFiles(startFolder,delDate);			//執行刪除操作
-//DeleteEmptyFolders(startFolder);			//刪除目標路徑內的空資料夾
+DeleteEmptyFolders(startFolder);			//刪除目標路徑內的空資料夾
 
 //匯總結果
 //備份成功消息提示
 //WScript.Echo("刪除舊的文件及目錄的操作已經完成！\n,共刪除文件" + fileCounter 
 //	+ "個，目錄" + folderCounter + "個\n詳細結果請查看日誌文件.");
-result = "\r\n共處理文件" + fileCounter + "個，目錄" + folderCounter + "個\r\n";
-result += "其中刪除成功" + (fileCounter - errorCounter) + "個，刪除失敗" + errorCounter + "個\r\n";
-
-
-output.line(result);
+output.line("\r\n共處理文件" + fileCounter + "個，目錄" + folderCounter + "個\r\n");
+output.line("其中刪除成功" + (fileCounter - errorCounter) + "個，刪除失敗" + errorCounter + "個\r\n");
 
 function DeleteOldFiles(folderName,BeforeDate){
 	var folder,selFile,fileCollection;
 	try{
 		folder = fso.GetFolder(folderName);
 	}catch(e1){
-		result = "出現異常：" + e1.description + "\r\n";
-		result += "提示：目標文件夾異常，請檢查目標文件夾路徑\r\n";
-		output.line(result);
+		output.line("出現異常：" + e1.description + "\r\n");
+		output.line("提示：目標文件夾異常，請檢查目標文件夾路徑\r\n");
 		return;
 	}
 	fileCollection = folder.Files;
@@ -71,10 +66,10 @@ function DeleteOldFiles(folderName,BeforeDate){
 		if(selFile.DateCreated <= BeforeDate){
 			//操作記錄
 			fileCounter++;
-			result = fileCounter + ":" + selFile.Name + " in " + selFile.ParentFolder + "\r\n";
-			result += "創建時間為：" + selFile.DateCreated+ "\r\n";
-			result += "最後一次訪問時間為：" +selFile.DateLastAccessed + "\r\n";
-			result += "最後一次修改時間為：" + selFile.DateLastModified + "\r\n";
+			output.line(fileCounter + ":" + selFile.Name + " in " + selFile.ParentFolder + "\r\n");
+			output.line("創建時間為：" + selFile.DateCreated+ "\r\n");
+			output.line("最後一次訪問時間為：" +selFile.DateLastAccessed + "\r\n")
+			output.line("最後一次修改時間為：" + selFile.DateLastModified + "\r\n")
 
 			if(isBak == true){
 				//按原文件路徑生成新文件路徑
@@ -89,8 +84,8 @@ function DeleteOldFiles(folderName,BeforeDate){
 			try{
 				fso.deleteFile(selFile.path,true);
 			}catch(e2){
-				result += "出現異常：" + e2.description + "\r\n";
-				result += "提示：可能是該文件正在使用中,該文件刪除失敗，跳過此文件繼續執行\r\n";
+				output.line("出現異常：" + e2.description + "\r\n");
+				output.line("提示：可能是該文件正在使用中,該文件刪除失敗，跳過此文件繼續執行\r\n");
 				errorCounter++;
 			}finally{
 				output.line(result);
@@ -107,10 +102,10 @@ function DeleteOldFiles(folderName,BeforeDate){
 function DeleteEmptyFolders(folderName){
 	var folder = fso.GetFolder(folderName);
 	if(folder.Files.Count == 0 && folder.SubFolders.Count == 0){
-		result += folder.Name + " in " + folder.ParentFolder + "\r\n";
-		result += "創建時間為：" + folder.DateCreated + "\r\n";
-		result += "最後一次訪問時間為：" + folder.DateLastAccessed + "\r\n";
-		result += "最後一次修改時間為：" + folder.DateLastModified + "\r\n";
+		output.line(folder.Name + " in " + folder.ParentFolder + "\r\n");
+		output.line("創建時間為：" + folder.DateCreated + "\r\n");
+		output.line("最後一次訪問時間為：" + folder.DateLastAccessed + "\r\n");
+		output.line("最後一次修改時間為：" + folder.DateLastModified + "\r\n")
 		fso.DeleteFolder(folder.Path);
 		folderCounter++;
 	}else if(folder.SubFolders.Count != 0){
