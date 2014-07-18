@@ -1,5 +1,5 @@
 fso = new ActiveXObject("Scripting.FileSystemObject");
-
+//test
 var today = new Date();  		//獲取當前日期
 //參數設定
 var timeUnit = "isDay";			//設定時間單位，值為isSecond,isMinute,isHour,isDay,isMonth,isYear
