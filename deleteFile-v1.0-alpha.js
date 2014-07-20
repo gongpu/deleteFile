@@ -49,7 +49,7 @@ DeleteEmptyFolders(startFolder);			//刪除目標路徑內的空資料夾
 output.line("\r\n共處理文件" + fileCounter + "個，目錄" + folderCounter + "個\r\n");
 output.line("其中刪除成功" + (fileCounter - errorCounter) + "個，刪除失敗" + errorCounter + "個\r\n");
 
-function DeleteOldFiles(folderName,BeforeDate){
+function DeleteOldFiles(folderName,date){
 	var folder,selFile,fileCollection;
 	try{
 		folder = fso.GetFolder(folderName);
@@ -63,7 +63,7 @@ function DeleteOldFiles(folderName,BeforeDate){
 	for(;!e.atEnd();e.moveNext()){
 		var selFile = e.item();
 		
-		if(selFile.DateCreated <= BeforeDate){
+		if(selFile.DateCreated <= date){
 			//操作記錄
 			fileCounter++;
 			output.line(fileCounter + ":" + selFile.Name + " in " + selFile.ParentFolder + "\r\n");
@@ -96,7 +96,7 @@ function DeleteOldFiles(folderName,BeforeDate){
 	var enumSubFolder = new Enumerator(folder.SubFolders);
 	//迴圈遍歷子資料夾
 	for(;!enumSubFolder.atEnd();enumSubFolder.moveNext()){
-		DeleteOldFiles(enumSubFolder.item().Path,BeforeDate);
+		DeleteOldFiles(enumSubFolder.item().Path,date);
 	}
 }
 function DeleteEmptyFolders(folderName){
